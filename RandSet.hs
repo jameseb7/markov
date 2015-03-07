@@ -41,12 +41,22 @@ module Data.RandSet where
     balance :: (Num w) => RandSet w v -> RandSet w v
     balance Nil = Nil
     balance b@(Branch w v h l r) 
-            | bf == 2 && bfl == -1 = rotater (Branch w v h (rotatel l) r)
-            | bf == 2 && bfl /= -1 = rotater (Branch w v h l r)
-            | bf == -2 && bfr == 1 = rotatel (Branch w v h l (rotater r))
-            | bf == -2 && bfr /= 1 = rotatel (Branch w v h l r)
-            | otherwise = b
+        | bf == 2 && bfl == -1 = rotater (Branch w v h (rotatel l) r)
+        | bf == 2 && bfl /= -1 = rotater (Branch w v h l r)
+        | bf == -2 && bfr == 1 = rotatel (Branch w v h l (rotater r))
+        | bf == -2 && bfr /= 1 = rotatel (Branch w v h l r)
+        | otherwise = b
         where bf = balanceFactor b 
               bfl = balanceFactor l
               bfr = balanceFactor r
               
+    add :: (Num w, Ord v) => (v,w) -> RandSet w v -> RandSet w v
+    add (v,w) Nil = Branch w v 1 Nil Nil
+    add (v,w) (Branch w' v' h' r l)
+        | v == v'    = Branch (w+w') v' h' r l
+        | v < v'     = balance $ Branch (w+w') v' newhr r' l
+        | otherwise  = balance $ Branch (w+w') v' newhl r l'
+        where l' = add (v,w) l
+              r' = add (v,w) r
+              newhr = 1 + max (height r') (height l)
+              newhl = 1 + max (height r) (height l)
