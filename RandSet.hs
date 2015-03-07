@@ -1,10 +1,16 @@
 module Data.RandSet where
 
+    import System.Random
+
     data RandSet w v = Nil | Branch w v Int (RandSet w v) (RandSet w v)
                      deriving (Show, Eq)
 
     empty :: RandSet w v
     empty = Nil
+
+    null :: RandSet w v -> Bool
+    null Nil = True
+    null _   = False
 
     weight :: (Num w) => RandSet w v -> w
     weight Nil = 0
@@ -60,3 +66,16 @@ module Data.RandSet where
               r' = add (v,w) r
               newhr = 1 + max (height r') (height l)
               newhl = 1 + max (height r) (height l)
+
+    findByWeight :: (Ord w, Num w) => w -> RandSet w v -> v
+    findByWeight _ Nil = error "Cannot choose an element from an empty RandSet"
+    findByWeight _ (Branch _ v _ Nil Nil) = v
+    findByWeight w' (Branch w v _ l r)
+        | w' <= weight l = findByWeight w' l
+        | w' > w - weight r = findByWeight (w' - w + weight r) r
+        | otherwise = v
+
+    randomChoice :: (RandomGen g, Random w, Ord w, Num w) => 
+                    g -> RandSet w v -> (g, v)
+    randomChoice g rs = (g', findByWeight w rs)
+        where (w,g') = randomR (1, weight rs) g
