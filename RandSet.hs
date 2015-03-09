@@ -1,5 +1,5 @@
 module Data.RandSet (
-                     RandSet, empty, null, add,
+                     RandSet, empty, Data.RandSet.null, add,
                      findByWeight, randomChoice
                     ) where
 
