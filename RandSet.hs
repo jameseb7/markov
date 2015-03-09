@@ -1,9 +1,12 @@
-module Data.RandSet where
+module Data.RandSet (
+                     RandSet, empty, null, add,
+                     findByWeight, randomChoice
+                    ) where
 
     import System.Random
 
     data RandSet w v = Nil | Branch w v Int (RandSet w v) (RandSet w v)
-                     deriving (Show, Eq)
+                     deriving (Eq)
 
     empty :: RandSet w v
     empty = Nil
