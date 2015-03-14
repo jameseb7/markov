@@ -13,7 +13,7 @@ module Data.MarkovChain where
 
     newtype OneGram a = OneGram a deriving (Eq, Ord, Show)
     instance NGram OneGram where
-        shiftAppend (OneGram _) a = OneGram a
+        shiftAppend (OneGram _) = OneGram
 
     newtype TwoGram a = TwoGram (a,a) deriving (Eq, Ord, Show)
     instance NGram TwoGram where

@@ -17,8 +17,7 @@ data Options = Options {
 
 options :: [OptDescr (Options -> Options)]
 options = 
-    [ Option ['w', 'n'] 
-                 ["words"] 
+    [ Option "wn" ["words"] 
                  (ReqArg (\ n opts -> opts{optWords=read n}) "INT")
                  "number of words to output" ]
 
